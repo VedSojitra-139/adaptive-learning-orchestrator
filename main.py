@@ -5,6 +5,7 @@ from typing import List
 from agents.progress_agent import update_progress
 from agents.adaptation_agent import adapt_plan
 from agents.memory_agent import retrieve_plans
+from db.firestore import db
 
 app = FastAPI()
 
@@ -39,3 +40,15 @@ def update_study_progress(request: ProgressRequest):
 def get_plans():
     plans = retrieve_plans()
     return {"plans": plans}
+
+@app.get("/workflow-logs")
+def get_logs():
+    docs = db.collection("workflow_logs").stream()
+
+    logs = []
+    for doc in docs:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        logs.append(data)
+
+    return {"logs": logs}

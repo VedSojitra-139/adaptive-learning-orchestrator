@@ -1,6 +1,7 @@
 import os
 from google.cloud import firestore
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -23,3 +24,9 @@ def get_all_plans():
         plans.append(data)
 
     return plans
+
+def save_workflow_log(log: dict):
+    doc_ref = db.collection("workflow_logs").document()
+    log["timestamp"] = datetime.utcnow().isoformat()
+    doc_ref.set(log)
+    return doc_ref.id
