@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from agents.orchestrator import create_plan
-
 from typing import List
 from agents.progress_agent import update_progress
 from agents.adaptation_agent import adapt_plan
+from agents.memory_agent import retrieve_plans
 
 app = FastAPI()
 
@@ -34,3 +34,8 @@ def update_study_progress(request: ProgressRequest):
         "updated_plan": updated_plan,
         "adapted_plan": adapted_plan
     }
+
+@app.get("/get-plans")
+def get_plans():
+    plans = retrieve_plans()
+    return {"plans": plans}
